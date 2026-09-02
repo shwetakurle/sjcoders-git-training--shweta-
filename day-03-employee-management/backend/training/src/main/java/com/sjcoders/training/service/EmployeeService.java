@@ -38,4 +38,30 @@ public class EmployeeService {
 
         return employeeRepository.findByDepartmentContainingIgnoreCase(query);
     }
+
+    public Optional<Employee> updateEmployee(Long id, Employee updatedEmployee) {
+
+        return employeeRepository.findById(id).map(employee -> {
+
+            employee.setFullName(updatedEmployee.getFullName());
+            employee.setEmployeeCode(updatedEmployee.getEmployeeCode());
+            employee.setEmail(updatedEmployee.getEmail());
+            employee.setDepartment(updatedEmployee.getDepartment());
+            employee.setRole(updatedEmployee.getRole());
+            employee.setPhone(updatedEmployee.getPhone());
+            employee.setStatus(updatedEmployee.getStatus());
+
+            return employeeRepository.save(employee);
+        });
+    }
+
+    public boolean deleteEmployee(Long id) {
+
+        if (!employeeRepository.existsById(id)) {
+            return false;
+        }
+
+        employeeRepository.deleteById(id);
+        return true;
+    }
 }
