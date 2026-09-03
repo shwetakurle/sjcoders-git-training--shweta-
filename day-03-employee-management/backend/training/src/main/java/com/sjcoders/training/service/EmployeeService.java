@@ -16,19 +16,24 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
+    // Add employee
     public Employee saveEmployee(Employee employee) {
         return employeeRepository.save(employee);
     }
 
+    // Get all employees
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
     }
 
+    // Get employee by ID
     public Optional<Employee> getEmployeeById(Long id) {
         return employeeRepository.findById(id);
     }
 
+    // Search employee
     public List<Employee> searchEmployees(String query) {
+
         List<Employee> byName =
                 employeeRepository.findByFullNameContainingIgnoreCase(query);
 
@@ -36,6 +41,42 @@ public class EmployeeService {
             return byName;
         }
 
-        return employeeRepository.findByDepartmentContainingIgnoreCase(query);
+        return employeeRepository
+                .findByDepartmentContainingIgnoreCase(query);
+    }
+
+    // Update employee
+    public Optional<Employee> updateEmployee(
+            Long id,
+            Employee updatedEmployee) {
+
+        return employeeRepository.findById(id)
+                .map(existingEmployee -> {
+
+                    existingEmployee.setFullName(
+                            updatedEmployee.getFullName()
+                    );
+
+                    existingEmployee.setEmail(
+                            updatedEmployee.getEmail()
+                    );
+
+                    existingEmployee.setDepartment(
+                            updatedEmployee.getDepartment()
+                    );
+
+                    return employeeRepository.save(existingEmployee);
+                });
+    }
+
+    // Delete employee
+    public boolean deleteEmployee(Long id) {
+
+        if (!employeeRepository.existsById(id)) {
+            return false;
+        }
+
+        employeeRepository.deleteById(id);
+        return true;
     }
 }
